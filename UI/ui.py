@@ -129,7 +129,7 @@ class TrafficAppUI:
         self.serial_service = serial_service
 
         self.root.title("Traffic Light Control & Monitor")
-        self.root.geometry("1020x840")
+        self.root.geometry("1060x900")
         self.root.configure(bg=BG_COLOR)
 
         self.mode_var = tk.StringVar(value="MODE: ---")
@@ -163,17 +163,17 @@ class TrafficAppUI:
 
     def _build_canvas(self):
         self.canvas = tk.Canvas(
-            self.root, width=980, height=650,
+            self.root, width=1000, height=700,
             bg=BG_COLOR, highlightthickness=0
         )
         self.canvas.pack(pady=8)
 
         # Road bounds
-        v_left, v_right = 410, 570
-        v_top, v_bottom = 190, 460
+        v_left, v_right = 420, 580
+        v_top, v_bottom = 90, 610
 
-        h_left, h_right = 140, 840
-        h_top, h_bottom = 245, 405
+        h_left, h_right = 80, 940
+        h_top, h_bottom = 260, 420
 
         # Roads
         self.canvas.create_rectangle(v_left, v_top, v_right, v_bottom, fill=ROAD_COLOR, outline="")
@@ -198,44 +198,46 @@ class TrafficAppUI:
         self.canvas.create_rectangle(v_left, h_top, v_right, h_bottom, outline="#6b7280")
 
         # Traffic lights
-        # North: quay 180°, qua bên trái
+        # North: dọc bên trái, G-Y-R
         self.north = LightGroup(
             self.canvas,
-            350, 125,
+            345, 130,
             "North",
             orientation="north",
             title_side="top",
             count_side="left"
         )
 
-        # South: giữ dọc, qua bên phải
+        # East: ngang phía trên, R-Y-G
+        # đổi title sang right để không đè với count ở top
+        self.east = LightGroup(
+            self.canvas,
+            815, 190,
+            "East",
+            orientation="east",
+            title_side="right",
+            count_side="top"
+        )
+
+        # South: dọc bên phải, R-Y-G
         self.south = LightGroup(
             self.canvas,
-            630, 525,
+            655, 580,
             "South",
             orientation="south",
             title_side="bottom",
             count_side="right"
         )
 
-        # West: quay +270°, xuống phía dưới
+        # West: ngang phía dưới, G-Y-R
+        # đổi title sang left để không đè với count ở bottom
         self.west = LightGroup(
             self.canvas,
-            255, 485,
+            215, 530,
             "West",
             orientation="west",
-            title_side="bottom",
+            title_side="left",
             count_side="bottom"
-        )
-
-        # East: quay +90°, lên phía trên
-        self.east = LightGroup(
-            self.canvas,
-            725, 165,
-            "East",
-            orientation="east",
-            title_side="top",
-            count_side="top"
         )
 
     def _draw_crosswalk_vertical(self, x: int, y: int, bars: int = 14):
