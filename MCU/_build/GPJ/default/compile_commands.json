@@ -1,0 +1,32 @@
+[
+{
+  "directory": "D:/Hardware/MPLab/GPJ/_build/GPJ/default",
+  "command": "c:\\PROGRA~1\\MICROC~1\\xc8\\v3.10\\bin\\xc8-cc.exe -DXPRJ_default=default -D_XTAL_FREQ=4000000UL -D__16F887__ -D__DEBUG=1 -ID:\\Hardware\\MPLab\\GPJ\\apps -ID:\\Hardware\\MPLab\\GPJ\\drivers -ID:\\Hardware\\MPLab\\GPJ\\bsp -c -mcpu=16F887 -mdfp=C:/Users/PC/.mchp_packs/Microchip/PIC16Fxxx_DFP/1.7.162/xc8 -fno-short-double -fno-short-float -O0 -maddrqual=ignore -mwarn=-3 -msummary=-psect,-class,+mem,-hex,-file -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto -ID:/Hardware/MPLab/GPJ/apps -ID:/Hardware/MPLab/GPJ/drivers -ID:/Hardware/MPLab/GPJ/bsp -o CMakeFiles\\GPJ_default_default_XC8_compile.dir\\D_\\Hardware\\MPLab\\GPJ\\apps\\traffic.c.p1 -c D:\\Hardware\\MPLab\\GPJ\\apps\\traffic.c",
+  "file": "D:\\Hardware\\MPLab\\GPJ\\apps\\traffic.c",
+  "output": "CMakeFiles\\GPJ_default_default_XC8_compile.dir\\D_\\Hardware\\MPLab\\GPJ\\apps\\traffic.c.p1"
+},
+{
+  "directory": "D:/Hardware/MPLab/GPJ/_build/GPJ/default",
+  "command": "c:\\PROGRA~1\\MICROC~1\\xc8\\v3.10\\bin\\xc8-cc.exe -DXPRJ_default=default -D_XTAL_FREQ=4000000UL -D__16F887__ -D__DEBUG=1 -ID:\\Hardware\\MPLab\\GPJ\\apps -ID:\\Hardware\\MPLab\\GPJ\\drivers -ID:\\Hardware\\MPLab\\GPJ\\bsp -c -mcpu=16F887 -mdfp=C:/Users/PC/.mchp_packs/Microchip/PIC16Fxxx_DFP/1.7.162/xc8 -fno-short-double -fno-short-float -O0 -maddrqual=ignore -mwarn=-3 -msummary=-psect,-class,+mem,-hex,-file -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto -ID:/Hardware/MPLab/GPJ/apps -ID:/Hardware/MPLab/GPJ/drivers -ID:/Hardware/MPLab/GPJ/bsp -o CMakeFiles\\GPJ_default_default_XC8_compile.dir\\D_\\Hardware\\MPLab\\GPJ\\drivers\\i2c.c.p1 -c D:\\Hardware\\MPLab\\GPJ\\drivers\\i2c.c",
+  "file": "D:\\Hardware\\MPLab\\GPJ\\drivers\\i2c.c",
+  "output": "CMakeFiles\\GPJ_default_default_XC8_compile.dir\\D_\\Hardware\\MPLab\\GPJ\\drivers\\i2c.c.p1"
+},
+{
+  "directory": "D:/Hardware/MPLab/GPJ/_build/GPJ/default",
+  "command": "c:\\PROGRA~1\\MICROC~1\\xc8\\v3.10\\bin\\xc8-cc.exe -DXPRJ_default=default -D_XTAL_FREQ=4000000UL -D__16F887__ -D__DEBUG=1 -ID:\\Hardware\\MPLab\\GPJ\\apps -ID:\\Hardware\\MPLab\\GPJ\\drivers -ID:\\Hardware\\MPLab\\GPJ\\bsp -c -mcpu=16F887 -mdfp=C:/Users/PC/.mchp_packs/Microchip/PIC16Fxxx_DFP/1.7.162/xc8 -fno-short-double -fno-short-float -O0 -maddrqual=ignore -mwarn=-3 -msummary=-psect,-class,+mem,-hex,-file -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto -ID:/Hardware/MPLab/GPJ/apps -ID:/Hardware/MPLab/GPJ/drivers -ID:/Hardware/MPLab/GPJ/bsp -o CMakeFiles\\GPJ_default_default_XC8_compile.dir\\D_\\Hardware\\MPLab\\GPJ\\drivers\\lcd.c.p1 -c D:\\Hardware\\MPLab\\GPJ\\drivers\\lcd.c",
+  "file": "D:\\Hardware\\MPLab\\GPJ\\drivers\\lcd.c",
+  "output": "CMakeFiles\\GPJ_default_default_XC8_compile.dir\\D_\\Hardware\\MPLab\\GPJ\\drivers\\lcd.c.p1"
+},
+{
+  "directory": "D:/Hardware/MPLab/GPJ/_build/GPJ/default",
+  "command": "c:\\PROGRA~1\\MICROC~1\\xc8\\v3.10\\bin\\xc8-cc.exe -DXPRJ_default=default -D_XTAL_FREQ=4000000UL -D__16F887__ -D__DEBUG=1 -ID:\\Hardware\\MPLab\\GPJ\\apps -ID:\\Hardware\\MPLab\\GPJ\\drivers -ID:\\Hardware\\MPLab\\GPJ\\bsp -c -mcpu=16F887 -mdfp=C:/Users/PC/.mchp_packs/Microchip/PIC16Fxxx_DFP/1.7.162/xc8 -fno-short-double -fno-short-float -O0 -maddrqual=ignore -mwarn=-3 -msummary=-psect,-class,+mem,-hex,-file -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto -ID:/Hardware/MPLab/GPJ/apps -ID:/Hardware/MPLab/GPJ/drivers -ID:/Hardware/MPLab/GPJ/bsp -o CMakeFiles\\GPJ_default_default_XC8_compile.dir\\D_\\Hardware\\MPLab\\GPJ\\drivers\\uart.c.p1 -c D:\\Hardware\\MPLab\\GPJ\\drivers\\uart.c",
+  "file": "D:\\Hardware\\MPLab\\GPJ\\drivers\\uart.c",
+  "output": "CMakeFiles\\GPJ_default_default_XC8_compile.dir\\D_\\Hardware\\MPLab\\GPJ\\drivers\\uart.c.p1"
+},
+{
+  "directory": "D:/Hardware/MPLab/GPJ/_build/GPJ/default",
+  "command": "c:\\PROGRA~1\\MICROC~1\\xc8\\v3.10\\bin\\xc8-cc.exe -DXPRJ_default=default -D_XTAL_FREQ=4000000UL -D__16F887__ -D__DEBUG=1 -ID:\\Hardware\\MPLab\\GPJ\\apps -ID:\\Hardware\\MPLab\\GPJ\\drivers -ID:\\Hardware\\MPLab\\GPJ\\bsp -c -mcpu=16F887 -mdfp=C:/Users/PC/.mchp_packs/Microchip/PIC16Fxxx_DFP/1.7.162/xc8 -fno-short-double -fno-short-float -O0 -maddrqual=ignore -mwarn=-3 -msummary=-psect,-class,+mem,-hex,-file -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto -ID:/Hardware/MPLab/GPJ/apps -ID:/Hardware/MPLab/GPJ/drivers -ID:/Hardware/MPLab/GPJ/bsp -o CMakeFiles\\GPJ_default_default_XC8_compile.dir\\D_\\Hardware\\MPLab\\GPJ\\main.c.p1 -c D:\\Hardware\\MPLab\\GPJ\\main.c",
+  "file": "D:\\Hardware\\MPLab\\GPJ\\main.c",
+  "output": "CMakeFiles\\GPJ_default_default_XC8_compile.dir\\D_\\Hardware\\MPLab\\GPJ\\main.c.p1"
+}
+]

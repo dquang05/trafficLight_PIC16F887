@@ -1,0 +1,40 @@
+{
+    "version": "1.9",
+    "propertyGroups": [
+        {
+            "name": "default-XC8",
+            "type": "toolchain",
+            "provider": "microchip.toolchains:xc8@3.10",
+            "properties": {}
+        }
+    ],
+    "fileSets": [
+        {
+            "name": "default",
+            "files": [
+                {
+                    "include": "**/*",
+                    "exclude": "**/(_build|out|cmake|.vscode)/**/*"
+                }
+            ]
+        }
+    ],
+    "configurations": [
+        {
+            "name": "default",
+            "id": "conf1",
+            "device": "PIC16F887",
+            "imagePath": "./out/GPJ/default.elf",
+            "packs": [
+                {
+                    "name": "PIC16Fxxx_DFP",
+                    "vendor": "Microchip",
+                    "version": "1.7.162"
+                }
+            ],
+            "fileSet": "default",
+            "toolchain": "default-XC8",
+            "includeLegacyMacros": true
+        }
+    ]
+}
