@@ -4,7 +4,7 @@
   <img src="assets/ui-demo.png" alt="UI Demo" width="750">
 </p>
 
-A personal embedded systems project that implements a 2-road traffic light controller on **PIC16F887**, with a **Python Tkinter desktop UI** for monitoring and control over UART. The project focuses on firmware development, peripheral integration, timer-based state control, and PC-side visualization.
+A embedded systems project that implements a 2-road traffic light controller on **PIC16F887**, with a **Python Tkinter desktop UI** for monitoring and control over UART. The project focuses on firmware development, peripheral integration, timer-based state control, and PC-side visualization.
 
 ## Features
 
