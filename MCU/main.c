@@ -9,7 +9,13 @@
 volatile uint8_t tick_500ms = 0;
 volatile uint8_t last_mode = 0xFF;
 volatile uint8_t rb0_pending = 0;
+volatile uint8_t rb1_pending = 0;
+volatile uint8_t rb2_pending = 0;
 
+volatile uint8_t rb1_armed = 1;
+volatile uint8_t rb2_armed = 1;
+
+volatile uint8_t portb_last = 0xFF;
 
 volatile char uart_cmd_buffer[8];
 volatile uint8_t uart_cmd_ready = 0;
@@ -65,21 +71,26 @@ void Interrupt_Init(void)
     INTCONbits.GIE = 0;
     INTCONbits.PEIE = 0;
 
-    // ===== External interrupt RB0 =====
-    // Đang test UI nên tắt hẳn cho sạch
     INTCONbits.INTE = 0;
     INTCONbits.INTF = 0;
-    OPTION_REGbits.INTEDG = 0;
+    OPTION_REGbits.INTEDG = 0;   // down edge
 
-    // ===== Timer1 =====
-    T1CON = 0b00110001; // Prescaler 1:8
-    TMR1 = 3036;        // 500ms @ 4MHz, prescaler 1:8
+    IOCBbits.IOCB1 = 1;         
+    IOCBbits.IOCB2 = 1;          
+
+    portb_last = PORTB;          // mem first state for PORTB change detection
+    INTCONbits.RBIF = 0;         // clear cờ PORTB change
+    INTCONbits.RBIE = 1;         // enable PORTB change interrupt
+
+    // Timer1 
+    T1CON = 0b00110001;          // Prescaler 1:8
+    TMR1 = 3036;                 // 500 ms @ 4 MHz, prescaler 1:8
     PIR1bits.TMR1IF = 0;
     PIE1bits.TMR1IE = 1;
 
     INTCONbits.PEIE = 1;
     INTCONbits.GIE = 1;
-    INTCONbits.INTE = 1;
+    INTCONbits.INTE = 1;         // RB0 INT on
 }
 
 static void Process_Uart_Command(const char *cmd)
@@ -139,17 +150,15 @@ static void Copy_Uart_Command(char *dst, uint8_t dst_size)
     INTCONbits.GIE = 1;
 }
 
-// ===== Global interrupt =====
 void __interrupt() ISR(void)
 {
-    // ===== UART RX interrupt =====
+    // UART RX interrupt
     if (PIR1bits.RCIF)
     {
         static char rx_buffer[8];
         static uint8_t rx_index = 0;
         char data;
 
-        // Overrun: reset receiver
         if (RCSTAbits.OERR)
         {
             RCSTAbits.CREN = 0;
@@ -201,14 +210,52 @@ void __interrupt() ISR(void)
         }
     }
 
-    // ===== RB0 external interrupt =====
+    //  RB0 external interrupt
     if (INTCONbits.INTF)
     {
         INTCONbits.INTF = 0;
         rb0_pending = 1;
     }
 
-    // ===== Timer1 interrupt =====
+    //  RB1/RB2 PORTB interrupt-on-change 
+    {
+        uint8_t now = PORTB;  
+
+        // RB1 pressed
+        if ((portb_last & (1 << 1)) && !(now & (1 << 1)))
+        {
+            if (rb1_armed)
+            {
+                rb1_pending = 1;
+                rb1_armed = 0;
+            }
+        }
+        // RB1: release button (0 -> 1) armed
+        else if (!(portb_last & (1 << 1)) && (now & (1 << 1)))
+        {
+            rb1_armed = 1;
+        }
+
+        // RB2: same as rb1
+        if ((portb_last & (1 << 2)) && !(now & (1 << 2)))
+        {
+            if (rb2_armed)
+            {
+                rb2_pending = 1;
+                rb2_armed = 0;
+            }
+        }
+        
+        else if (!(portb_last & (1 << 2)) && (now & (1 << 2)))
+        {
+            rb2_armed = 1;
+        }
+
+        portb_last = now;
+        INTCONbits.RBIF = 0;
+    }
+
+    // Timer1 interrupt
     if (PIR1bits.TMR1IF)
     {
         PIR1bits.TMR1IF = 0;
@@ -251,6 +298,36 @@ int main(void)
             mode = (mode + 1) % 3;
             exitsign = 1;
             timer_counter = 0;
+        }
+                if (rb1_pending)
+        {
+            rb1_pending = 0;
+
+            __delay_ms(20);  
+
+            if ((PORTBbits.RB1 == 0) && (mode == 1))
+            {
+                road1_flag = 1;
+                road2_flag = 0;   
+                exitsign = 1;
+                timer_counter = 0;
+            }
+        }
+
+        if (rb2_pending)
+        {
+            rb2_pending = 0;
+
+            __delay_ms(20);  // soft debounce
+
+            // conly on manual mode
+            if ((PORTBbits.RB2 == 0) && (mode == 1))
+            {
+                road2_flag = 1;
+                road1_flag = 0;   // force only 1 lane
+                exitsign = 1;
+                timer_counter = 0;
+            }
         }
         // ===== Xử lý command UART ngoài ISR =====
         if (uart_cmd_ready)
