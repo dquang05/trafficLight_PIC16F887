@@ -75,14 +75,14 @@ void Interrupt_Init(void)
     INTCONbits.INTF = 0;
     OPTION_REGbits.INTEDG = 0;   // down edge
 
-    IOCBbits.IOCB1 = 1;         
-    IOCBbits.IOCB2 = 1;          
+    IOCBbits.IOCB1 = 1;
+    IOCBbits.IOCB2 = 1;
 
     portb_last = PORTB;          // mem first state for PORTB change detection
     INTCONbits.RBIF = 0;         // clear cờ PORTB change
     INTCONbits.RBIE = 1;         // enable PORTB change interrupt
 
-    // Timer1 
+    // Timer1
     T1CON = 0b00110001;          // Prescaler 1:8
     TMR1 = 3036;                 // 500 ms @ 4 MHz, prescaler 1:8
     PIR1bits.TMR1IF = 0;
@@ -217,9 +217,10 @@ void __interrupt() ISR(void)
         rb0_pending = 1;
     }
 
-    //  RB1/RB2 PORTB interrupt-on-change 
+    //  RB1/RB2 PORTB interrupt-on-change
+    if (INTCONbits.RBIF)
     {
-        uint8_t now = PORTB;  
+        uint8_t now = PORTB;
 
         // RB1 pressed
         if ((portb_last & (1 << 1)) && !(now & (1 << 1)))
@@ -245,7 +246,7 @@ void __interrupt() ISR(void)
                 rb2_armed = 0;
             }
         }
-        
+
         else if (!(portb_last & (1 << 2)) && (now & (1 << 2)))
         {
             rb2_armed = 1;
@@ -285,7 +286,6 @@ int main(void)
     tick_500ms = 0;
     uart_cmd_ready = 0;
 
-        
     I2C_LCD_Init();
     Interrupt_Init();
     UART_Init();
@@ -299,16 +299,17 @@ int main(void)
             exitsign = 1;
             timer_counter = 0;
         }
-                if (rb1_pending)
+
+        if (rb1_pending)
         {
             rb1_pending = 0;
 
-            __delay_ms(20);  
+            __delay_ms(20);
 
             if ((PORTBbits.RB1 == 0) && (mode == 1))
             {
                 road1_flag = 1;
-                road2_flag = 0;   
+                road2_flag = 0;
                 exitsign = 1;
                 timer_counter = 0;
             }
@@ -318,17 +319,17 @@ int main(void)
         {
             rb2_pending = 0;
 
-            __delay_ms(20);  // soft debounce
+            __delay_ms(20);
 
-            // conly on manual mode
             if ((PORTBbits.RB2 == 0) && (mode == 1))
             {
                 road2_flag = 1;
-                road1_flag = 0;   // force only 1 lane
+                road1_flag = 0;
                 exitsign = 1;
                 timer_counter = 0;
             }
         }
+
         // ===== Xử lý command UART ngoài ISR =====
         if (uart_cmd_ready)
         {
@@ -381,8 +382,7 @@ int main(void)
         }
 
         // Gửi trạng thái định kỳ cho UI/PC
-         UART_TxTrafficState();
+        UART_TxTrafficState();
         __delay_ms(100);
     }
 }
-
