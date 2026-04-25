@@ -57,3 +57,8 @@ Supported serial/UI commands:
 - `RC4` → I2C SDA
 - `RB0`, `RB1`, `RB2` → push buttons
 - UART baud rate in the current setup: **9600**
+
+## Fault notes
+- This is a small project, i do not optimal it for fault tolerance, so there are some faults in the code, such as:
+  - All the components must be connected or the hardware may not function correctly.
+  - If the LCD is not properly initialized or connected, it will not run correctly until the MCU is reset.

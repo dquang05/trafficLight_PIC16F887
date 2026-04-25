@@ -19,6 +19,7 @@ volatile uint8_t portb_last = 0xFF;
 
 volatile char uart_cmd_buffer[8];
 volatile uint8_t uart_cmd_ready = 0;
+volatile uint8_t uart_tx_pending = 0;
 
 static void System_Init(void);
 static void Interrupt_Init(void);
@@ -27,20 +28,16 @@ static void Copy_Uart_Command(char *dst, uint8_t dst_size);
 
 void System_Init(void)
 {
-    // Digital I/O
     ANSEL = 0;
     ANSELH = 0;
 
-    // PORTA: output cho đèn
     TRISA = 0x00;
     PORTA = 0x00;
 
-    // PORTB: input nút nhấn
-    TRISBbits.TRISB0 = 1; // PB0
-    TRISBbits.TRISB1 = 1; // PB1
-    TRISBbits.TRISB2 = 1; // PB2
+    TRISBbits.TRISB0 = 1;
+    TRISBbits.TRISB1 = 1;
+    TRISBbits.TRISB2 = 1;
 
-    // Internal weak pull-up cho RB0..RB2
     OPTION_REGbits.nRBPU = 0;
     WPUBbits.WPUB0 = 1;
     WPUBbits.WPUB1 = 1;
@@ -48,16 +45,13 @@ void System_Init(void)
 
     PORTB = 0x00;
 
-    // PORTC, PORTE
     TRISC = 0x00;
     PORTC = 0x00;
     TRISE = 0x00;
 
-    // I2C pins
-    TRISCbits.TRISC3 = 1; // SCL
-    TRISCbits.TRISC4 = 1; // SDA
+    TRISCbits.TRISC3 = 1;
+    TRISCbits.TRISC4 = 1;
 
-    // Reset tất cả đèn
     RED1 = 0;
     GREEN1 = 0;
     YELLOW1 = 0;
@@ -73,24 +67,23 @@ void Interrupt_Init(void)
 
     INTCONbits.INTE = 0;
     INTCONbits.INTF = 0;
-    OPTION_REGbits.INTEDG = 0;   // down edge
+    OPTION_REGbits.INTEDG = 0;
 
     IOCBbits.IOCB1 = 1;
     IOCBbits.IOCB2 = 1;
 
-    portb_last = PORTB;          // mem first state for PORTB change detection
-    INTCONbits.RBIF = 0;         // clear cờ PORTB change
-    INTCONbits.RBIE = 1;         // enable PORTB change interrupt
+    portb_last = PORTB;
+    INTCONbits.RBIF = 0;
+    INTCONbits.RBIE = 1;
 
-    // Timer1
-    T1CON = 0b00110001;          // Prescaler 1:8
-    TMR1 = 3036;                 // 500 ms @ 4 MHz, prescaler 1:8
+    T1CON = 0b00110001;
+    TMR1 = 3036;
     PIR1bits.TMR1IF = 0;
     PIE1bits.TMR1IE = 1;
 
     INTCONbits.PEIE = 1;
     INTCONbits.GIE = 1;
-    INTCONbits.INTE = 1;         // RB0 INT on
+    INTCONbits.INTE = 1;
 }
 
 static void Process_Uart_Command(const char *cmd)
@@ -103,19 +96,19 @@ static void Process_Uart_Command(const char *cmd)
     }
     else if (strcmp(cmd, "A") == 0)
     {
-        mode = 0; // AUTO
+        mode = 0;
         exitsign = 1;
         timer_counter = 0;
     }
     else if (strcmp(cmd, "N") == 0)
     {
-        mode = 1; // MANUAL
+        mode = 1;
         exitsign = 1;
         timer_counter = 0;
     }
     else if (strcmp(cmd, "F") == 0)
     {
-        mode = 2; // FLASHING
+        mode = 2;
         exitsign = 1;
         timer_counter = 0;
     }
@@ -152,7 +145,6 @@ static void Copy_Uart_Command(char *dst, uint8_t dst_size)
 
 void __interrupt() ISR(void)
 {
-    // UART RX interrupt
     if (PIR1bits.RCIF)
     {
         static char rx_buffer[8];
@@ -210,19 +202,16 @@ void __interrupt() ISR(void)
         }
     }
 
-    //  RB0 external interrupt
     if (INTCONbits.INTF)
     {
         INTCONbits.INTF = 0;
         rb0_pending = 1;
     }
 
-    //  RB1/RB2 PORTB interrupt-on-change
     if (INTCONbits.RBIF)
     {
         uint8_t now = PORTB;
 
-        // RB1 pressed
         if ((portb_last & (1 << 1)) && !(now & (1 << 1)))
         {
             if (rb1_armed)
@@ -231,13 +220,11 @@ void __interrupt() ISR(void)
                 rb1_armed = 0;
             }
         }
-        // RB1: release button (0 -> 1) armed
         else if (!(portb_last & (1 << 1)) && (now & (1 << 1)))
         {
             rb1_armed = 1;
         }
 
-        // RB2: same as rb1
         if ((portb_last & (1 << 2)) && !(now & (1 << 2)))
         {
             if (rb2_armed)
@@ -246,7 +233,6 @@ void __interrupt() ISR(void)
                 rb2_armed = 0;
             }
         }
-
         else if (!(portb_last & (1 << 2)) && (now & (1 << 2)))
         {
             rb2_armed = 1;
@@ -256,11 +242,12 @@ void __interrupt() ISR(void)
         INTCONbits.RBIF = 0;
     }
 
-    // Timer1 interrupt
     if (PIR1bits.TMR1IF)
     {
         PIR1bits.TMR1IF = 0;
         TMR1 = 3036;
+
+        uart_tx_pending = 1;
 
         tick_500ms++;
         if (tick_500ms >= 2)
@@ -277,7 +264,6 @@ int main(void)
 
     System_Init();
 
-    // Trạng thái khởi tạo
     mode = 0;
     last_mode = 0xFF;
     timer_counter = 0;
@@ -285,6 +271,7 @@ int main(void)
     system_state = 0;
     tick_500ms = 0;
     uart_cmd_ready = 0;
+    uart_tx_pending = 1;
 
     I2C_LCD_Init();
     Interrupt_Init();
@@ -298,20 +285,25 @@ int main(void)
             mode = (mode + 1) % 3;
             exitsign = 1;
             timer_counter = 0;
+            uart_tx_pending = 1;
         }
 
         if (rb1_pending)
         {
             rb1_pending = 0;
 
-            __delay_ms(20);
-
-            if ((PORTBbits.RB1 == 0) && (mode == 1))
+            if (mode == 1)
             {
-                road1_flag = 1;
-                road2_flag = 0;
-                exitsign = 1;
-                timer_counter = 0;
+                __delay_ms(20);
+
+                if (PORTBbits.RB1 == 0)
+                {
+                    road1_flag = 1;
+                    road2_flag = 0;
+                    exitsign = 1;
+                    timer_counter = 0;
+                    uart_tx_pending = 1;
+                }
             }
         }
 
@@ -319,25 +311,28 @@ int main(void)
         {
             rb2_pending = 0;
 
-            __delay_ms(20);
-
-            if ((PORTBbits.RB2 == 0) && (mode == 1))
+            if (mode == 1)
             {
-                road2_flag = 1;
-                road1_flag = 0;
-                exitsign = 1;
-                timer_counter = 0;
+                __delay_ms(20);
+
+                if (PORTBbits.RB2 == 0)
+                {
+                    road2_flag = 1;
+                    road1_flag = 0;
+                    exitsign = 1;
+                    timer_counter = 0;
+                    uart_tx_pending = 1;
+                }
             }
         }
 
-        // ===== Xử lý command UART ngoài ISR =====
         if (uart_cmd_ready)
         {
             Copy_Uart_Command(cmd, sizeof(cmd));
             Process_Uart_Command(cmd);
+            uart_tx_pending = 1;
         }
 
-        // ===== Khi mode đổi =====
         if (last_mode != mode)
         {
             RED1 = 0;
@@ -365,7 +360,6 @@ int main(void)
             last_mode = mode;
         }
 
-        // ===== Main state machine =====
         switch (mode)
         {
         case 0:
@@ -381,8 +375,10 @@ int main(void)
             break;
         }
 
-        // Gửi trạng thái định kỳ cho UI/PC
-        UART_TxTrafficState();
-        __delay_ms(100);
+        if (uart_tx_pending)
+        {
+            uart_tx_pending = 0;
+            UART_TxTrafficState();
+        }
     }
 }
