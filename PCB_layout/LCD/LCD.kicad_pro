@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 1.5,
-          "height": 2.25,
-          "width": 2.25
+          "drill": 0.8,
+          "height": 1.27,
+          "width": 2.54
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -189,8 +189,7 @@
       "track_widths": [
         0.0,
         0.2,
-        0.4,
-        0.8
+        0.4
       ],
       "tuning_pattern_settings": {
         "diff_pair_defaults": {
@@ -224,8 +223,8 @@
           "drill": 0.0
         },
         {
-          "diameter": 0.2,
-          "drill": 0.2
+          "diameter": 0.3,
+          "drill": 0.0
         }
       ],
       "zones_allow_external_fillets": false
@@ -471,7 +470,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "miniPIC.kicad_pro",
+    "filename": "LCD.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -507,7 +506,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "./",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
@@ -617,8 +616,8 @@
       "version": 1
     },
     "net_format_name": "",
-    "page_layout_descr_file": "PIC_devboard",
-    "plot_directory": "",
+    "page_layout_descr_file": "",
+    "plot_directory": "./",
     "space_save_all_events": true,
     "spice_current_sheet_as_root": false,
     "spice_external_command": "spice \"%I\"",
@@ -631,7 +630,7 @@
   },
   "sheets": [
     [
-      "f105e62a-81e6-49c3-8d19-eca1eaea1a34",
+      "c361ec55-a592-4026-b4d3-c46d4456a490",
       "Root"
     ]
   ],

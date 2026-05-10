@@ -134,7 +134,7 @@ class TrafficAppUI:
 
         self.mode_var = tk.StringVar(value="MODE: ---")
         self.status_var = tk.StringVar(value="Disconnected")
-        self.port_var = tk.StringVar(value="COM5")
+        self.port_var = tk.StringVar(value="COM7")
         self.baud_var = tk.StringVar(value="9600")
 
         self._build_topbar()
